@@ -231,7 +231,37 @@ FRAME_HEIGHT = 8.0 units
 | `LARGE_BUFF` | 1.0 | Separation between distinct sections |
 | `0` | 0.0 | Touching elements: bars, grid tiles |
 
-### 5.3 Standard positioning idioms
+### 5.3 Named screen zones
+
+Define these at the top of every scene file so placement is never a magic number:
+
+```python
+# Zone boundaries (all in Manim coordinate units)
+TITLE_Y_TOP    =  3.8   # to_edge(UP, buff=0.3) lands here
+TITLE_Y_BOT    =  2.9   # bottom of a font_size=48 title
+FOOTER_Y       = -3.3   # to_edge(DOWN, buff=0.5)
+
+# Full-frame main visual (no title, no sidebar)
+MAIN_X_CENTER  =  0.0
+MAIN_Y_CENTER  =  0.0
+
+# Split-screen: left panel (graph/diagram) + right sidebar (equations/annotations)
+LEFT_PANEL_CENTER  = LEFT  * 1.8          # move_to for axes
+RIGHT_PANEL_X      =  4.35                # x anchor for sidebar items
+SIDEBAR_SLOT_TOP   =  1.8                 # slot 0 — primary equation
+SIDEBAR_SLOT_1     =  1.0                 # slot 1
+SIDEBAR_SLOT_2     =  0.2                 # slot 2
+SIDEBAR_SLOT_3     = -0.6                 # slot 3
+SIDEBAR_SLOT_BOT   = -1.4                 # slot 4 — lowest annotation
+```
+
+Use slots instead of raw coordinates:
+```python
+formula.move_to(RIGHT * RIGHT_PANEL_X + UP * SIDEBAR_SLOT_TOP)
+note.move_to(RIGHT   * RIGHT_PANEL_X + UP * SIDEBAR_SLOT_2)
+```
+
+### 5.4 Standard positioning idioms
 
 ```python
 mob.to_edge(UP, buff=MED_SMALL_BUFF)        # title placement
@@ -245,6 +275,28 @@ group.arrange(RIGHT, buff=MED_LARGE_BUFF)
 touching_bars.arrange(RIGHT, buff=0)
 grid.arrange_in_grid(n_cols=4, aligned_edge=LEFT)
 ```
+
+### 5.5 Split-screen layout pattern
+
+The most common multi-element layout: graph on the left, annotations stacked on the right.
+
+```python
+# Axes occupy the left ~60 % of the frame
+axes = Axes(...).move_to(LEFT_PANEL_CENTER + DOWN * 0.2)
+
+# Sidebar items are anchored to RIGHT_PANEL_X and stacked by slot
+primary_eq  = MathTex(...).move_to(RIGHT * RIGHT_PANEL_X + UP * SIDEBAR_SLOT_TOP)
+secondary   = Text(...).move_to(RIGHT   * RIGHT_PANEL_X + UP * SIDEBAR_SLOT_2)
+footer_note = Text(...).move_to(RIGHT   * RIGHT_PANEL_X + UP * SIDEBAR_SLOT_BOT)
+
+# Safety checks before any self.play()
+check_in_frame(axes,        "axes")
+check_in_frame(primary_eq,  "primary_eq")
+check_in_frame(secondary,   "secondary")
+check_no_overlaps([axes, primary_eq, secondary], ["axes", "primary_eq", "secondary"])
+```
+
+When replacing a sidebar item, fade out the old one before placing the new one at the same slot so the frame never holds two items at the same position.
 
 ---
 

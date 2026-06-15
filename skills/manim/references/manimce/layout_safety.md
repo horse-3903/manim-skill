@@ -40,28 +40,37 @@ def check_in_frame(mob, name="mob"):
 ## Overlap detection between two mobjects
 
 ```python
-def overlaps(a, b, margin=0.05):
-    """Return True if mobjects a and b overlap (within margin)."""
-    al, ab = a.get_left()[0],   a.get_bottom()[1]
-    ar, at = a.get_right()[0],  a.get_top()[1]
-    bl, bb = b.get_left()[0],   b.get_bottom()[1]
-    br, bt = b.get_right()[0],  b.get_top()[1]
-    x_overlap = al < br + margin and ar > bl - margin
-    y_overlap = ab < bt + margin and at > bb - margin
-    return x_overlap and y_overlap
+def overlaps(a, b, margin=0.15):
+    """Return True if mobjects a and b overlap (with margin as breathing room).
+
+    margin=0.15  — default for text/equations; anything closer looks cramped
+    margin=0.05  — tight mode for bars, grid tiles, or intentionally adjacent shapes
+    margin=0.0   — exact bounding-box intersection only
+    """
+    x_ok = a.get_left()[0]   < b.get_right()[0]  + margin and \
+           a.get_right()[0]  > b.get_left()[0]   - margin
+    y_ok = a.get_bottom()[1] < b.get_top()[1]    + margin and \
+           a.get_top()[1]    > b.get_bottom()[1] - margin
+    return x_ok and y_ok
 ```
 
 **Check all pairs in a group:**
 
 ```python
-def check_no_overlaps(mobs, names=None, margin=0.05):
-    """Warn on every overlapping pair in a list of mobjects."""
+def check_no_overlaps(mobs, names=None, margin=0.15, raise_on_fail=False):
+    """Warn on every overlapping pair in a list of mobjects.
+
+    Set raise_on_fail=True in test/CI contexts to hard-stop on layout bugs.
+    """
     names = names or [f"mob_{i}" for i in range(len(mobs))]
     ok = True
     for i in range(len(mobs)):
         for j in range(i + 1, len(mobs)):
             if overlaps(mobs[i], mobs[j], margin):
-                print(f"[LAYOUT WARNING] '{names[i]}' overlaps '{names[j]}'")
+                msg = f"[LAYOUT WARNING] '{names[i]}' overlaps '{names[j]}'"
+                if raise_on_fail:
+                    raise AssertionError(msg)
+                print(msg)
                 ok = False
     return ok
 ```
@@ -79,9 +88,8 @@ FRAME_X_LIMIT = 7.0
 FRAME_Y_LIMIT = 3.8
 
 def check_in_frame(mob, name="mob"):
-    bbox = mob.get_bounding_box()
-    l, b = bbox[0][0], bbox[0][1]
-    r, t = bbox[2][0], bbox[2][1]
+    l = mob.get_left()[0];  r = mob.get_right()[0]
+    b = mob.get_bottom()[1]; t = mob.get_top()[1]
     issues = []
     if l < -FRAME_X_LIMIT: issues.append(f"left {l:.2f}")
     if r >  FRAME_X_LIMIT: issues.append(f"right {r:.2f}")
@@ -91,19 +99,25 @@ def check_in_frame(mob, name="mob"):
         print(f"[LAYOUT WARNING] '{name}' out of frame: {issues}")
     return not issues
 
-def overlaps(a, b, margin=0.05):
-    x_ok = a.get_left()[0]   < b.get_right()[0] + margin and \
-           a.get_right()[0]  > b.get_left()[0]  - margin
-    y_ok = a.get_bottom()[1] < b.get_top()[1]   + margin and \
+def overlaps(a, b, margin=0.15):
+    x_ok = a.get_left()[0]   < b.get_right()[0]  + margin and \
+           a.get_right()[0]  > b.get_left()[0]   - margin
+    y_ok = a.get_bottom()[1] < b.get_top()[1]    + margin and \
            a.get_top()[1]    > b.get_bottom()[1] - margin
     return x_ok and y_ok
 
-def check_no_overlaps(mobs, names=None, margin=0.05):
+def check_no_overlaps(mobs, names=None, margin=0.15, raise_on_fail=False):
     names = names or [f"mob_{i}" for i in range(len(mobs))]
+    ok = True
     for i in range(len(mobs)):
         for j in range(i + 1, len(mobs)):
             if overlaps(mobs[i], mobs[j], margin):
-                print(f"[LAYOUT WARNING] '{names[i]}' overlaps '{names[j]}'")
+                msg = f"[LAYOUT WARNING] '{names[i]}' overlaps '{names[j]}'"
+                if raise_on_fail:
+                    raise AssertionError(msg)
+                print(msg)
+                ok = False
+    return ok
 
 
 class MyScene(Scene):
@@ -114,16 +128,80 @@ class MyScene(Scene):
         label  = Text("A label",  font_size=32).next_to(title, DOWN, buff=0.5)
         axes   = Axes(x_range=[-3, 3], y_range=[-2, 2]).to_edge(DOWN, buff=0.8)
 
-        # ── Check layout before animating ──────────────────────
+        # Check layout before animating
         check_in_frame(title,  "title")
         check_in_frame(label,  "label")
         check_in_frame(axes,   "axes")
         check_no_overlaps([title, label, axes], ["title", "label", "axes"])
-        # ───────────────────────────────────────────────────────
 
         self.add(axes)
         self.play(Write(title))
         self.play(Write(label))
+```
+
+---
+
+## Temporal overlap checking
+
+`check_no_overlaps` only makes sense for elements that are **simultaneously visible**. Track the visible set and check against it when adding or removing elements:
+
+```python
+class MyScene(Scene):
+    def construct(self):
+        self._visible: dict[str, Mobject] = {}
+
+    def show(self, mob, name, animation=FadeIn, **kwargs):
+        check_in_frame(mob, name)
+        check_no_overlaps(
+            list(self._visible.values()) + [mob],
+            list(self._visible.keys())   + [name],
+        )
+        self._visible[name] = mob
+        self.play(animation(mob), **kwargs)
+
+    def hide(self, name, animation=FadeOut, **kwargs):
+        mob = self._visible.pop(name, None)
+        if mob:
+            self.play(animation(mob), **kwargs)
+```
+
+Usage:
+```python
+self.show(title, "title", Write)
+self.show(axes,  "axes",  Create)
+self.hide("title")          # removes from visible set before adding step label
+self.show(step_label, "step_label", Write)
+```
+
+This prevents false positives from elements that never co-exist on screen.
+
+---
+
+## Label-over-curve overlap check
+
+Graph labels sitting on top of a colored curve are a silent visual bug — the bounding boxes often don't overlap but the label still reads poorly. Two mitigations:
+
+```python
+# 1. Always set backstroke for any label near a graph
+label.set_backstroke(BLACK, width=5)
+
+# 2. After placing the label, verify it doesn't intersect the curve's bounding box
+def check_label_clear_of_curve(label, curve, name="label", margin=0.15):
+    if overlaps(label, curve, margin=margin):
+        print(f"[LAYOUT WARNING] '{name}' sits over the curve — reposition or increase buff")
+        return False
+    return True
+```
+
+```python
+graph_label = axes.get_graph_label(graph, r"f(x)", x_val=2.5, direction=UP)
+graph_label.set_backstroke(BLACK, width=5)
+check_label_clear_of_curve(graph_label, graph, "graph_label")
+```
+
+If the check fires, move the label along the curve's proportion:
+```python
+graph_label.move_to(graph.point_from_proportion(0.85) + UP * 0.4)
 ```
 
 ---
@@ -251,9 +329,11 @@ mob.get_center()    # = [x_mid, y_mid, 0]
 ## Checklist — run before every render
 
 - [ ] Every mobject passes `check_in_frame()`
-- [ ] All concurrent on-screen elements pass `check_no_overlaps()`
+- [ ] All **simultaneously visible** elements pass `check_no_overlaps()` — not just all elements in the file
 - [ ] No equation wider than 12 units
 - [ ] Axes height <= 4.5 if title present, <= 6 if no title
-- [ ] Labels on graphs have `set_backstroke(BLACK, 4)` if over colored curves
+- [ ] Labels on graphs have `set_backstroke(BLACK, 5)` and pass `check_label_clear_of_curve()`
 - [ ] Groups wider than frame scaled down with `group.set_width(max_w)`
 - [ ] `next_to()` calls use appropriate buff (min `SMALL_BUFF = 0.1`)
+- [ ] Sidebar items placed by slot constant, not raw coordinate
+- [ ] `check_no_overlaps` margin is `0.15` for text/equations, `0.05` only for bars/tiles

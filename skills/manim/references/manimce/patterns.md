@@ -2,6 +2,41 @@
 
 All examples use ManimCE (`from manim import *`).
 
+All examples include the layout safety helpers. Copy this block once at the top of every scene file:
+
+```python
+from manim import *
+
+FRAME_X_LIMIT = 7.0
+FRAME_Y_LIMIT = 3.8
+
+def check_in_frame(mob, name="mob"):
+    l = mob.get_left()[0];  r = mob.get_right()[0]
+    b = mob.get_bottom()[1]; t = mob.get_top()[1]
+    issues = []
+    if l < -FRAME_X_LIMIT: issues.append(f"left {l:.2f}")
+    if r >  FRAME_X_LIMIT: issues.append(f"right {r:.2f}")
+    if b < -FRAME_Y_LIMIT: issues.append(f"bottom {b:.2f}")
+    if t >  FRAME_Y_LIMIT: issues.append(f"top {t:.2f}")
+    if issues:
+        print(f"[LAYOUT WARNING] '{name}' out of frame: {issues}")
+    return not issues
+
+def overlaps(a, b, margin=0.15):
+    x_ok = a.get_left()[0]   < b.get_right()[0]  + margin and \
+           a.get_right()[0]  > b.get_left()[0]   - margin
+    y_ok = a.get_bottom()[1] < b.get_top()[1]    + margin and \
+           a.get_top()[1]    > b.get_bottom()[1] - margin
+    return x_ok and y_ok
+
+def check_no_overlaps(mobs, names=None, margin=0.15):
+    names = names or [f"mob_{i}" for i in range(len(mobs))]
+    for i in range(len(mobs)):
+        for j in range(i + 1, len(mobs)):
+            if overlaps(mobs[i], mobs[j], margin):
+                print(f"[LAYOUT WARNING] '{names[i]}' overlaps '{names[j]}'")
+```
+
 ---
 
 ## 1. Mathematical proof animation (Pythagorean theorem)
@@ -13,15 +48,19 @@ class PythagoreanProof(Scene):
     def construct(self):
         a, b = 3, 4
         triangle = Polygon(ORIGIN, RIGHT * a, RIGHT * a + UP * b, color=WHITE)
+        check_in_frame(triangle, "triangle")
         self.play(Create(triangle))
 
         label_a = MathTex("a").next_to(triangle, DOWN)
         label_b = MathTex("b").next_to(triangle, RIGHT)
         label_c = MathTex("c").next_to(triangle.get_center(), UL)
+        check_no_overlaps([triangle, label_a, label_b, label_c],
+                          ["triangle", "label_a", "label_b", "label_c"])
         self.play(Write(label_a), Write(label_b), Write(label_c))
         self.wait()
 
         eq = MathTex(r"a^2 + b^2 = c^2").to_edge(UP)
+        check_in_frame(eq, "eq")
         self.play(Write(eq))
         self.wait()
 
@@ -55,10 +94,13 @@ class FunctionExplorer(Scene):
             axis_config={"include_tip": True, "numbers_to_include": [-3,-2,-1,1,2,3]},
         ).add_coordinates()
 
+        check_in_frame(axes, "axes")
         self.play(Create(axes), run_time=1.5)
 
         graph = axes.plot(lambda x: x**2, color=YELLOW, x_range=[-2.8, 2.8])
         graph_label = axes.get_graph_label(graph, r"f(x) = x^2", x_val=2.5, direction=UP)
+        graph_label.set_backstroke(BLACK, width=5)
+        check_in_frame(graph_label, "graph_label")
         self.play(Create(graph), Write(graph_label))
         self.wait()
 
@@ -108,6 +150,7 @@ class SaddleSurface(ThreeDScene):
 
         title = Text("z = x² - y²  (saddle point)", font_size=36).to_corner(UL)
         self.add_fixed_in_frame_mobjects(title)
+        check_in_frame(title, "title")
         self.play(Write(title))
         self.play(Create(axes), Create(surface), run_time=3)
         self.begin_ambient_camera_rotation(rate=0.15)
@@ -139,6 +182,9 @@ class BarChartAnimation(Scene):
         )
 
         title = Text("Weekly Activity", font_size=48).to_edge(UP)
+        check_in_frame(title, "title")
+        check_in_frame(chart, "chart")
+        check_no_overlaps([title, chart], ["title", "chart"])
         self.play(Write(title))
         self.play(Create(chart), run_time=2)
 
@@ -178,6 +224,9 @@ class QuadraticFormula(Scene):
 
         current = MathTex(steps[0]).scale(1.2)
         note = Text(annotations[0], font_size=30, color=GRAY).to_edge(DOWN)
+        check_in_frame(current, "eq_0")
+        check_in_frame(note, "note")
+        check_no_overlaps([current, note], ["eq", "note"])
         self.play(Write(current), FadeIn(note))
         self.wait(1.5)
 
@@ -220,6 +269,7 @@ class GraphVisualization(Scene):
             labels=True,
         )
 
+        check_in_frame(g, "graph")
         self.play(Create(g), run_time=2)
         self.wait()
 

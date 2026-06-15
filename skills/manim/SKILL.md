@@ -205,21 +205,4 @@ Good-looking animations follow these rules. See `references/manimce/design.md` f
 
 ## Layout safety (ManimCE)
 
-Always check elements before animating. See `references/manimce/layout_safety.md` for helpers.
-
-```python
-FRAME_X_LIMIT = 7.0
-FRAME_Y_LIMIT = 3.8
-
-def check_in_frame(mob, name="mob"):
-    bbox = mob.get_bounding_box()
-    l, b, r, t = bbox[0][0], bbox[0][1], bbox[2][0], bbox[2][1]
-    issues = []
-    if l < -FRAME_X_LIMIT: issues.append(f"left {l:.2f}")
-    if r >  FRAME_X_LIMIT: issues.append(f"right {r:.2f}")
-    if b < -FRAME_Y_LIMIT: issues.append(f"bottom {b:.2f}")
-    if t >  FRAME_Y_LIMIT: issues.append(f"top {t:.2f}")
-    if issues:
-        print(f"[LAYOUT WARNING] '{name}' out of frame: {issues}")
-    return not issues
-```
+Always check elements before animating. Copy the helpers from `references/manimce/layout_safety.md` and call them throughout `construct()`. The full reference covers frame bounds, overlap detection, temporal visibility, and the pre-render checklist.
