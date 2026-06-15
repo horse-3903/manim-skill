@@ -1,0 +1,1 @@
+manim: Skill for generating ManimCE animation code — scene construction, mobjects, LaTeX, graph plotting, 3D scenes, camera movement, and complete working examples for math and science visualizations.
