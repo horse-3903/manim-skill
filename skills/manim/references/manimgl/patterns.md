@@ -1,4 +1,4 @@
-# ManimGL — Complete Working Examples
+# ManimGL: Complete Working Examples
 
 All examples use ManimGL (`from manimlib import *`).
 
@@ -134,7 +134,7 @@ class TimeSpanExample(InteractiveScene):
 
 ---
 
-## 6. VShowPassingFlash — signal flow
+## 6. VShowPassingFlash: signal flow
 
 ```python
 from manimlib import *

@@ -1,11 +1,11 @@
 ---
 name: manim
-description: "Generate Manim animation code for visual math and science videos. Use this skill whenever someone asks Claude to create, write, or fix Manim code — including scene construction, mobject animation, LaTeX rendering, graph plotting, 3D scenes, camera movement, or any visual animation using the Manim library. Also trigger when the user wants to explain a concept visually with code, animate a mathematical proof, build an educational video, or produce a rendered .mp4 or .gif from Python. Trigger proactively when the conversation is clearly heading toward visual animation even if they haven't said 'Manim' yet."
+description: "Generate Manim animation code for visual math and science videos. Use this skill whenever someone asks Claude to create, write, or fix Manim code, including scene construction, mobject animation, LaTeX rendering, graph plotting, 3D scenes, camera movement, or any visual animation using the Manim library. Also trigger when the user wants to explain a concept visually with code, animate a mathematical proof, build an educational video, or produce a rendered .mp4 or .gif from Python. Trigger proactively when the conversation is clearly heading toward visual animation even if they haven't said 'Manim' yet."
 ---
 
 # Manim Animation Skill
 
-## Step 1 — Identify which version before writing any code
+## Step 1: Identify which version before writing any code
 
 They are **incompatible**. Never mix imports or patterns.
 
@@ -19,7 +19,7 @@ They are **incompatible**. Never mix imports or patterns.
 | Default scene | `Scene` | `InteractiveScene` |
 | Maintained by | Community | 3Blue1Brown |
 | Docs | docs.manim.community | github.com/3b1b/manim |
-| Use when | Default — stable public API | Replicating 3b1b's exact style |
+| Use when | Default, stable public API | Replicating 3b1b's exact style |
 
 **Default to ManimCE** unless the user explicitly says ManimGL, shows `from manimlib import *`, or is working with 3b1b's video source code.
 
@@ -29,12 +29,12 @@ They are **incompatible**. Never mix imports or patterns.
 
 Read these when writing ManimCE code (`from manim import *`):
 
-- `references/manimce/layout_safety.md` — **Read for every scene** — overlap helpers, frame boundary checks, layout budget, pre-render checklist
-- `references/manimce/design.md` — Full design guide: palette, color-coding, typography, timing, emphasis. Read first for aesthetic guidance
-- `references/manimce/mobjects.md` — VMobject, NumberLine, Axes, always-redraw, custom shapes
-- `references/manimce/animations.md` — Updaters, ValueTracker, custom Animation subclass, path following
-- `references/manimce/camera.md` — MovingCameraScene, ZoomedScene, 3D camera, frame manipulation
-- `references/manimce/patterns.md` — Complete working examples: proof, graph, 3D surface, bar chart, equation derivation, network graph
+- `references/manimce/layout_safety.md`: **Read for every scene**, overlap helpers, frame boundary checks, layout budget, pre-render checklist
+- `references/manimce/design.md`: Full design guide: palette, color-coding, typography, timing, emphasis. Read first for aesthetic guidance
+- `references/manimce/mobjects.md`: VMobject, NumberLine, Axes, always-redraw, custom shapes
+- `references/manimce/animations.md`: Updaters, ValueTracker, custom Animation subclass, path following
+- `references/manimce/camera.md`: MovingCameraScene, ZoomedScene, 3D camera, frame manipulation
+- `references/manimce/patterns.md`: Complete working examples: proof, graph, 3D surface, bar chart, equation derivation, network graph
 
 ---
 
@@ -42,12 +42,12 @@ Read these when writing ManimCE code (`from manim import *`):
 
 Read these when writing ManimGL code (`from manimlib import *`):
 
-- `references/manimgl/core.md` — API reference: InteractiveScene, `self.frame`, `Tex`, `ShowCreation`, `time_span`, `GlowDot`, Axes differences, what GL has that CE doesn't and vice versa
-- `references/manimgl/patterns.md` — Complete working examples: basic scene, camera control, equation derivation, ValueTracker+GlowDot, `time_span`, `VShowPassingFlash`, 3D, Pythagorean proof
+- `references/manimgl/core.md`: API reference: InteractiveScene, `self.frame`, `Tex`, `ShowCreation`, `time_span`, `GlowDot`, Axes differences, what GL has that CE doesn't and vice versa
+- `references/manimgl/patterns.md`: Complete working examples: basic scene, camera control, equation derivation, ValueTracker+GlowDot, `time_span`, `VShowPassingFlash`, 3D, Pythagorean proof
 
 ---
 
-## Quick start — ManimCE
+## Quick start: ManimCE
 
 ```python
 from manim import *
@@ -70,7 +70,7 @@ Quality flags: `-ql` (480p), `-qm` (720p), `-qh` (1080p), `-qk` (4K).
 
 ---
 
-## Quick start — ManimGL
+## Quick start: ManimGL
 
 ```python
 from manimlib import *

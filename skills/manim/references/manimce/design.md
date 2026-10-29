@@ -1,4 +1,4 @@
-# Design Principles — 3b1b Visual Style
+# Design Principles: 3b1b Visual Style
 
 Extracted from reading Python files across every year (_2015-_2026) and the `custom/` folder of github.com/3b1b/videos.
 
@@ -25,15 +25,15 @@ self.add(FullScreenRectangle())
 
 ## 2. Color system
 
-### 2.1 The grey hierarchy — text and secondary elements
+### 2.1 The grey hierarchy, text and secondary elements
 
 Grey constants go from lightest to darkest:
-- `GREY_A` — near-white; secondary text, de-emphasized annotations
-- `GREY_B` — muted labels, axis separators, structural arrows
-- `GREY_C` — subtle grid lines (often at 0.5-0.75 stroke opacity)
-- `GREY_D` — background fills for diagram panels
-- `GREY_E` — near-black fills; dark background rectangles
-- `GREY_BROWN` — Mortimer pi creature, earthy secondary elements
+- `GREY_A`: near-white; secondary text, de-emphasized annotations
+- `GREY_B`: muted labels, axis separators, structural arrows
+- `GREY_C`: subtle grid lines (often at 0.5-0.75 stroke opacity)
+- `GREY_D`: background fills for diagram panels
+- `GREY_E`: near-black fills; dark background rectangles
+- `GREY_BROWN`: Mortimer pi creature, earthy secondary elements
 
 **Rule:** Annotation text that shouldn't compete with math uses `GREY_A` or `GREY_B`, not WHITE.
 
@@ -58,7 +58,7 @@ Pick one color per concept and never break it within a video:
 | Key highlight | `YELLOW` |
 | Author name in quote | `YELLOW` |
 
-### 2.3 The t2c pattern — mandatory for equations
+### 2.3 The t2c pattern, mandatory for equations
 
 `t2c` (tex_to_color_map) is the dominant design tool. Define it once, reuse across every equation in the scene:
 
@@ -81,11 +81,11 @@ eq1 = Tex(r"$\mu_s = n \cdot \mu$", t2c=COLOR_MAP)
 ### 2.4 Shades within a color family
 
 Use dark-to-light shade variants for depth:
-- `BLUE_E` (darkest) — fill backgrounds, bar darks
-- `BLUE_D` — primary shape fill color
-- `BLUE_C` — secondary emphasis
-- `BLUE_B` — bright highlight
-- `BLUE_A` (lightest) — rare, very subtle
+- `BLUE_E` (darkest): fill backgrounds, bar darks
+- `BLUE_D`: primary shape fill color
+- `BLUE_C`: secondary emphasis
+- `BLUE_B`: bright highlight
+- `BLUE_A` (lightest): rare, very subtle
 
 Same pattern applies to `TEAL_*`, `GREEN_*`, `RED_*`, `GREY_*`.
 
@@ -124,9 +124,9 @@ Positive = blue family. Negative = red family. Magnitude = brightness.
 | Mixed text + math | `Tex` with `\text{}` | `Tex` |
 | Live-updating number | `DecimalNumber` | `DecimalNumber` |
 
-Do NOT use `OldTex` or `OldTexText` — legacy ManimGL classes from pre-2022.
+Do NOT use `OldTex` or `OldTexText`: legacy ManimGL classes from pre-2022.
 
-### 3.2 Font sizes — exact values
+### 3.2 Font sizes, exact values
 
 | Context | font_size |
 |---|---|
@@ -138,7 +138,7 @@ Do NOT use `OldTex` or `OldTexText` — legacy ManimGL classes from pre-2022.
 | Axis tick numbers | 20-24 |
 | Dense multi-formula layouts | 30-36 |
 
-Always pass `font_size` explicitly — never rely on defaults.
+Always pass `font_size` explicitly: never rely on defaults.
 
 ### 3.3 Text alignment
 
@@ -321,7 +321,7 @@ When replacing a sidebar item, fade out the old one before placing the new one a
 | Shape morphs | `Transform` / `ReplacementTransform` | same |
 | Dissolve between shapes | `FadeTransform` | `FadeTransform` |
 
-### 6.3 time_span — ManimGL only **[GL only]**
+### 6.3 time_span: ManimGL only **[GL only]**
 
 ```python
 # ManimGL only:
@@ -349,11 +349,11 @@ mob.animate.set_opacity(0)    # fade without removing from scene
 
 ### 7.1 Hierarchy (lightest to heaviest)
 
-1. `obj.animate.set_color(YELLOW)` — color shift
-2. `Indicate(obj)` — brief scale pulse
-3. `WiggleOutThenIn(obj)` — wobble
-4. `FlashAround(obj)` — ring of lines **[GL: FlashAround, CE: Circumscribe]**
-5. `Flash(point)` — star burst
+1. `obj.animate.set_color(YELLOW)`: color shift
+2. `Indicate(obj)`: brief scale pulse
+3. `WiggleOutThenIn(obj)`: wobble
+4. `FlashAround(obj)`: ring of lines **[GL: FlashAround, CE: Circumscribe]**
+5. `Flash(point)`: star burst
 6. `SurroundingRectangle`:
    ```python
    box = SurroundingRectangle(obj, color=YELLOW, buff=SMALL_BUFF)
@@ -362,7 +362,7 @@ mob.animate.set_opacity(0)    # fade without removing from scene
 
 Use at most two emphasis techniques in one scene.
 
-### 7.2 VShowPassingFlash — traveling highlight **[GL only]**
+### 7.2 VShowPassingFlash: traveling highlight **[GL only]**
 
 ```python
 VShowPassingFlash(path, time_width=1, run_time=2)
@@ -370,7 +370,7 @@ VShowPassingFlash(path, time_width=1, run_time=2)
 
 ManimCE has `ShowPassingFlash` with similar but different behavior.
 
-### 7.3 GlowDot — modern point marker **[GL only]**
+### 7.3 GlowDot: modern point marker **[GL only]**
 
 ```python
 dot = GlowDot(point, color=YELLOW)
@@ -519,7 +519,7 @@ Graph labels always get `set_backstroke(BLACK, width=5)` when over colored curve
 
 ---
 
-## 12. Quick reference — exact numbers
+## 12. Quick reference: exact numbers
 
 | Parameter | Value |
 |---|---|

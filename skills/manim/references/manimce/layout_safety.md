@@ -1,4 +1,4 @@
-# ManimCE — Layout Safety: Overlap and Boundary Checks
+# ManimCE: Layout Safety: Overlap and Boundary Checks
 
 **Import:** `from manim import *`
 
@@ -10,8 +10,8 @@ Apply ALL checks in this file before calling self.play() on any new element.
 ## Frame boundaries
 
 The visible frame is exactly:
-- Width: 14.22 units — x must stay within [-7.11, 7.11]
-- Height: 8.0 units — y must stay within [-4.0, 4.0]
+- Width: 14.22 units, x must stay within [-7.11, 7.11]
+- Height: 8.0 units, y must stay within [-4.0, 4.0]
 
 ```python
 FRAME_X_LIMIT = 7.0    # leave 0.11 margin
@@ -179,7 +179,7 @@ This prevents false positives from elements that never co-exist on screen.
 
 ## Label-over-curve overlap check
 
-Graph labels sitting on top of a colored curve are a silent visual bug — the bounding boxes often don't overlap but the label still reads poorly. Two mitigations:
+Graph labels sitting on top of a colored curve are a silent visual bug, the bounding boxes often don't overlap but the label still reads poorly. Two mitigations:
 
 ```python
 # 1. Always set backstroke for any label near a graph
@@ -280,7 +280,7 @@ check_no_overlaps([axes, annotation], ["axes", "annotation"])
 
 ---
 
-## Layout budget — plan before coding
+## Layout budget: plan before coding
 
 Before writing a scene, sketch the vertical budget:
 ```
@@ -299,8 +299,8 @@ Budget for main visual = 8.0 - 0.4 - 0.7 - 0.4 - 0.5 - 0.4 - 0.3 - 0.4 = 4.9 uni
 ```
 
 For a typical title + graph scene:
-- Title at top: 0.4 buff — occupies roughly y in [3.0, 3.8]
-- Axes: set `height=4.5` max — fits below title
+- Title at top: 0.4 buff, occupies roughly y in [3.0, 3.8]
+- Axes: set `height=4.5` max: fits below title
 
 ---
 
@@ -326,10 +326,10 @@ mob.get_center()    # = [x_mid, y_mid, 0]
 
 ---
 
-## Checklist — run before every render
+## Checklist: run before every render
 
 - [ ] Every mobject passes `check_in_frame()`
-- [ ] All **simultaneously visible** elements pass `check_no_overlaps()` — not just all elements in the file
+- [ ] All **simultaneously visible** elements pass `check_no_overlaps()`: not just all elements in the file
 - [ ] No equation wider than 12 units
 - [ ] Axes height <= 4.5 if title present, <= 6 if no title
 - [ ] Labels on graphs have `set_backstroke(BLACK, 5)` and pass `check_label_clear_of_curve()`

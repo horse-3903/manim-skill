@@ -1,12 +1,12 @@
-# ManimCE — Mobjects Deep Reference
+# ManimCE: Mobjects Deep Reference
 
 **Import:** `from manim import *`
 
 ## VMobject internals
 
 All vector mobjects inherit from `VMobject`. Key properties:
-- `points` — numpy array of bezier control points
-- `submobjects` — list of child VMobjects
+- `points`: numpy array of bezier control points
+- `submobjects`: list of child VMobjects
 - `fill_color`, `stroke_color`, `stroke_width`
 
 ```python

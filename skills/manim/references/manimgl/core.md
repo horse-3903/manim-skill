@@ -1,4 +1,4 @@
-# ManimGL — Core API Reference
+# ManimGL: Core API Reference
 
 ManimGL is Manim maintained by 3Blue1Brown, used in all 3b1b YouTube videos.
 
@@ -12,7 +12,7 @@ ManimGL is Manim maintained by 3Blue1Brown, used in all 3b1b YouTube videos.
 
 | Class | Use when |
 |---|---|
-| `InteractiveScene` | Default (2022+) — opens interactive window |
+| `InteractiveScene` | Default (2022+): opens interactive window |
 | `Scene` | Simple non-interactive scenes |
 | `ThreeDScene` | 3D camera |
 
@@ -38,7 +38,7 @@ manimgl scene.py MyScene -n 10    # start from frame 10
 
 ---
 
-## Camera — self.frame
+## Camera: self.frame
 
 In ManimGL the camera is `self.frame`, NOT `self.camera.frame`.
 
@@ -67,7 +67,7 @@ self.frame.clear_updaters()
 
 ---
 
-## Text and math — Tex only
+## Text and math, Tex only
 
 ManimGL has no `MathTex`. All LaTeX goes through `Tex`. Math must be wrapped in `$...$`.
 
@@ -85,13 +85,13 @@ label = Text("Hello world", font_size=48)
 eq = Tex(r"$\mu_s = n \cdot \mu$", t2c={R"\mu": PINK, "n": YELLOW})
 ```
 
-Parts are accessed by index, but splitting behavior differs from ManimCE — test indexing carefully:
+Parts are accessed by index, but splitting behavior differs from ManimCE, test indexing carefully:
 ```python
 eq = Tex(r"$a^2 + b^2 = c^2$")
 eq[0].set_color(YELLOW)
 ```
 
-**Avoid:** `OldTex`, `OldTexText` — legacy aliases, do not use in new code.
+**Avoid:** `OldTex`, `OldTexText`: legacy aliases, do not use in new code.
 
 ---
 
@@ -109,7 +109,7 @@ eq[0].set_color(YELLOW)
 
 ---
 
-## time_span — ManimGL exclusive
+## time_span: ManimGL exclusive
 
 Specify exactly when within a `self.play()` call each sub-animation fires:
 
@@ -123,11 +123,11 @@ self.play(
 ```
 
 `time_span=(start, end)` where values are in seconds within the total `run_time`.
-ManimCE has no equivalent — use `Succession` or `lag_ratio` to approximate.
+ManimCE has no equivalent, use `Succession` or `lag_ratio` to approximate.
 
 ---
 
-## GlowDot and TrueDot — ManimGL exclusive
+## GlowDot and TrueDot, ManimGL exclusive
 
 Preferred point marker style (replaces plain `Dot` in modern 3b1b videos):
 
@@ -152,9 +152,9 @@ dot = VGroup(dot_glow, dot_core)
 
 ---
 
-## VShowPassingFlash — ManimGL exclusive
+## VShowPassingFlash: ManimGL exclusive
 
-Traveling highlight along a path — used for "signal flowing" visuals:
+Traveling highlight along a path, used for "signal flowing" visuals:
 
 ```python
 VShowPassingFlash(path, time_width=1, run_time=2)
@@ -240,12 +240,12 @@ CONFIG = {"n_bars": 10, "fill_color": BLUE}
 
 ## What ManimGL does NOT have
 
-- `BarChart` — no built-in bar chart
-- `Graph` (network graph visualization) — no built-in
-- `MathTex` — use `Tex` with `$...$`
+- `BarChart`: no built-in bar chart
+- `Graph` (network graph visualization): no built-in
+- `MathTex`: use `Tex` with `$...$`
 - `next_section()` / section-based rendering
-- `ZoomedScene` — use `self.frame.animate.scale()` instead
-- `--save_last_frame` — use `-s` flag
+- `ZoomedScene`: use `self.frame.animate.scale()` instead
+- `--save_last_frame`: use `-s` flag
 
 ## What ManimCE does NOT have (ManimGL exclusives)
 

@@ -1,4 +1,4 @@
-# ManimCE — Animations Deep Reference
+# ManimCE: Animations Deep Reference
 
 **Import:** `from manim import *`
 
@@ -83,7 +83,7 @@ self.wait(3)
 label.clear_updaters()
 ```
 
-`always_redraw` recreates the mobject every frame — use for complex redraws:
+`always_redraw` recreates the mobject every frame, use for complex redraws:
 ```python
 tangent_line = always_redraw(lambda: get_tangent_at(t.get_value()))
 ```

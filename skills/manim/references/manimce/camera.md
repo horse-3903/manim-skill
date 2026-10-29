@@ -1,4 +1,4 @@
-# ManimCE — Camera Deep Reference
+# ManimCE: Camera Deep Reference
 
 **Import:** `from manim import *`
 
@@ -36,7 +36,7 @@ class PanAndZoom(MovingCameraScene):
         self.play(self.camera.frame.animate.scale(2).move_to(ORIGIN))
 ```
 
-`self.camera.frame` is a `Rectangle` mobject — any `.animate` call works on it.
+`self.camera.frame` is a `Rectangle` mobject: any `.animate` call works on it.
 
 Note: In ManimGL this is `self.frame` (no `.camera`).
 
@@ -92,7 +92,7 @@ class ZoomExample(ZoomedScene):
 
 ---
 
-## 3D camera — ThreeDScene
+## 3D camera: ThreeDScene
 
 ```python
 class SurfacePlot(ThreeDScene):

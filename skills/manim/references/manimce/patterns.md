@@ -1,4 +1,4 @@
-# ManimCE — Complete Working Examples
+# ManimCE: Complete Working Examples
 
 All examples use ManimCE (`from manim import *`).
 
